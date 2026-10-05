@@ -1,0 +1,8 @@
+; Practical 9 : CIR, CIL
+        LDA NUM         ; AC <- 9, E = 0
+        CIR             ; AC = 4, E = 1
+        CIR             ; AC = 32770, E = 0
+        CIL             ; AC = 4, E = 1
+        CIL             ; AC = 9, E = 0
+        HLT
+NUM:    .data 1 9

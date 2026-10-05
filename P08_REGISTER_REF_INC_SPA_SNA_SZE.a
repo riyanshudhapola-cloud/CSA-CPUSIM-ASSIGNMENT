@@ -1,0 +1,14 @@
+; Practical 8 : INC, SPA, SNA, SZE
+; Each HLT is a trap: only reached if the skip before it fails.
+        LDA NUM         ; AC <- -2
+        INC             ; -2 -> -1
+        SNA             ; negative -> skip next
+        HLT             ; (skipped)
+        INC             ; -1 -> 0
+        SPA             ; AC(15)=0 -> skip next
+        HLT             ; (skipped)
+        SZE             ; E=0 -> skip next
+        HLT             ; (skipped)
+        INC             ; 0 -> 1
+        HLT
+NUM:    .data 1 -2

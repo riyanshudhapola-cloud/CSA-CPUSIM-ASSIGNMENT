@@ -1,0 +1,8 @@
+; Practical 7 : CLA, CMA, CME, HLT
+; Observe AC, E, PC, AR and IR (Unsigned Dec) after every instruction.
+        LDA NUM         ; set-up: AC <- 25
+        CLA             ; AC <- 0
+        CMA             ; AC <- FFFF
+        CME             ; E <- E'
+        HLT
+NUM:    .data 1 25

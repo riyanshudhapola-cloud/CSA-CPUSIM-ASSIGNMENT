@@ -1,0 +1,12 @@
+; Practical 11 : add integers until zero is read
+LOOP:   INP
+        SZA             ; AC = 0 -> skip next
+        BUN ADDIT
+        BUN DONE
+ADDIT:  ADD SUM
+        STA SUM
+        BUN LOOP
+DONE:   LDA SUM
+        OUT
+        HLT
+SUM:    .data 1 0

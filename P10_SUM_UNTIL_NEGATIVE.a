@@ -1,0 +1,11 @@
+; Practical 10 : add integers until a negative number is read
+LOOP:   INP
+        SPA             ; AC >= 0 -> skip exit branch
+        BUN DONE
+        ADD SUM
+        STA SUM
+        BUN LOOP
+DONE:   LDA SUM
+        OUT
+        HLT
+SUM:    .data 1 0

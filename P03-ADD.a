@@ -1,0 +1,6 @@
+    LDA A
+    ADD B
+    HLT
+A,  DEC 20
+B,  DEC 30
+    END

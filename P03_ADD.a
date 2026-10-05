@@ -1,0 +1,11 @@
+; Practical 3 : ADD operation on two user-entered numbers
+; Machine : BasicComputer.cpu (Mano's Basic Computer)
+        INP             ; AC <- first number
+        STA A           ; M[A] <- AC
+        INP             ; AC <- second number
+        ADD A           ; AC <- AC + M[A], E <- carry out
+        STA SUM         ; M[SUM] <- AC
+        OUT             ; display the sum
+        HLT
+A:      .data 1 0
+SUM:    .data 1 0

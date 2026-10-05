@@ -1,0 +1,13 @@
+; Practical 4 : SUBTRACT operation on two user-entered numbers
+; DIFF = A - B = A + (B' + 1)
+        INP             ; AC <- A (minuend)
+        STA A
+        INP             ; AC <- B (subtrahend)
+        CMA             ; 1's complement of B
+        INC             ; 2's complement of B = -B
+        ADD A           ; AC <- A - B
+        STA DIFF
+        OUT
+        HLT
+A:      .data 1 0
+DIFF:   .data 1 0

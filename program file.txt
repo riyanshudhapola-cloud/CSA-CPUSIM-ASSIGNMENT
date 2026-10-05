@@ -1,0 +1,68 @@
+BASIC COMPUTER - CPU SIM 4 BUILD SHEET (Practicals 1 and 2)
+Execute > Options: bit indexing from the left (default).
+
+1. HARDWARE (Modify > Hardware Modules, Ctrl+K)
+ Registers (initial 0): AC 16, DR 16, AR 12, PC 12, IR 16, E 1, TMP 1, S 1
+ ConditionBits: carry-E (reg E, bit 0, halt NO); halt-S (reg S, bit 0, halt YES)
+ RAM: M, length 4096, cellSize 16
+
+2. MICROINSTRUCTIONS (Modify > Microinstructions, Ctrl+Shift+M)
+ TransferRtoR (name: src srcStart -> dest destStart numBits)
+  PC->AR: PC 0 -> AR 0, 12
+  IR(0-11)->AR: IR 4 -> AR 0, 12
+  AR->PC: AR 0 -> PC 0, 12
+  DR->AC: DR 0 -> AC 0, 16
+  AC(0)->TMP: AC 15 -> TMP 0, 1
+  AC(15)->TMP: AC 0 -> TMP 0, 1
+  E->AC(15): E 0 -> AC 0, 1
+  E->AC(0): E 0 -> AC 15, 1
+  TMP->E: TMP 0 -> E 0, 1
+ MemoryAccess (M)
+  M[AR]->IR: read, IR, AR
+  M[AR]->DR: read, DR, AR
+  AC->M[AR]: write, AC, AR
+  DR->M[AR]: write, DR, AR
+ Increment: PC+1->PC (PC,1); DR+1->DR (DR,1); AC+1->AC (AC,1)
+ Arithmetic: AC+DR->AC,E: ADD, AC, DR, AC, carry bit carry-E
+ Logical: AC^DR->AC: AND AC,DR->AC; AC'->AC: NOT AC,AC->AC; E'->E: NOT E,E->E
+ Shift: shr AC: AC->AC logical right 1; shl AC: AC->AC logical left 1
+ Set: 0->AC (AC, start 0, 16 bits, 0); 0->E (E, start 0, 1 bit, 0)
+ Test (register start numBits comparison value omission):
+  if(DR!=0)skip-1:      DR 0 16 NE 0 1
+  if(AC(15)!=0)skip-1:  AC 0 1  NE 0 1
+  if(AC(15)==0)skip-1:  AC 0 1  EQ 0 1
+  if(AC!=0)skip-1:      AC 0 16 NE 0 1
+  if(E!=0)skip-1:       E  0 1  NE 0 1
+ Decode: decode-IR (IR)
+ SetCondBit: 1->S(halt): halt-S, value 1
+ IO: input-int->AC (input, integer, AC, [Console]); output-AC->int (output, integer, AC, [Console])
+
+3. FETCH SEQUENCE (Modify > Fetch Sequence, Ctrl+T)
+ PC->AR, M[AR]->IR, PC+1->PC, IR(0-11)->AR, decode-IR
+
+4. FIELDS (Modify > Machine Instructions > Edit Fields): all required, absolute, unsigned, default 0
+ op 4, addr 12, opcode 16
+
+5. MACHINE INSTRUCTIONS (name opcode format: execute sequence, always ending in End)
+ AND 0x0  op addr: M[AR]->DR, AC^DR->AC
+ ADD 0x1  op addr: M[AR]->DR, AC+DR->AC,E
+ LDA 0x2  op addr: M[AR]->DR, DR->AC
+ STA 0x3  op addr: AC->M[AR]
+ BUN 0x4  op addr: AR->PC
+ ISZ 0x6  op addr: M[AR]->DR, DR+1->DR, DR->M[AR], if(DR!=0)skip-1, PC+1->PC
+ CLA 0x7800 opcode: 0->AC
+ CLE 0x7400 opcode: 0->E
+ CMA 0x7200 opcode: AC'->AC
+ CME 0x7100 opcode: E'->E
+ CIR 0x7080 opcode: AC(0)->TMP, shr AC, E->AC(15), TMP->E
+ CIL 0x7040 opcode: AC(15)->TMP, shl AC, E->AC(0), TMP->E
+ INC 0x7020 opcode: AC+1->AC
+ SPA 0x7010 opcode: if(AC(15)!=0)skip-1, PC+1->PC
+ SNA 0x7008 opcode: if(AC(15)==0)skip-1, PC+1->PC
+ SZA 0x7004 opcode: if(AC!=0)skip-1, PC+1->PC
+ SZE 0x7002 opcode: if(E!=0)skip-1, PC+1->PC
+ HLT 0x7001 opcode: 1->S(halt)
+ INP 0xf800 opcode: input-int->AC
+ OUT 0xf400 opcode: output-AC->int
+
+6. Execute > Options: set PC as the program counter. File > Save machine as BasicComputer.cpu
